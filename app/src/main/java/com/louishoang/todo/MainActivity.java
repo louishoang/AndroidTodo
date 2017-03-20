@@ -11,9 +11,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.louishoang.todo.db.TaskContract;
 import com.louishoang.todo.db.TaskDbHelper;
@@ -103,5 +105,17 @@ public class MainActivity extends AppCompatActivity {
       default:
         return super.onOptionsItemSelected(item);
     }
+  }
+
+  public void deleteTask(View view){
+    View parent = (View) view.getParent();
+    TextView taskTextView = (TextView)parent.findViewById(R.id.task_title);
+    String task = String.valueOf(taskTextView.getText());
+    SQLiteDatabase db = mHelper.getWritableDatabase();
+    db.delete(TaskContract.TaskEntry.TABLE,
+      TaskContract.TaskEntry.COL_TASK_TITLE + " = ?",
+      new String[]{task});
+    db.close();
+    updateUI();
   }
 }
